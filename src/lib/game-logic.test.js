@@ -48,6 +48,11 @@ describe('Util Functions', () => {
 	});
 
 	test('getEmptyBoard', () => {
-		expect(getEmptyBoard()).toEqual([[0, 0, 0], [0, 0, 0], [0, 0, 0]]);
+		const board = Array(5).fill(0);
+		for(let i = 0; i < 5; i++) {
+			board[i] = Array(5).fill(0);
+		}
+
+		expect(getEmptyBoard()).toEqual(board);
 	});
 });
