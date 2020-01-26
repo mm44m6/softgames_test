@@ -17,13 +17,15 @@ import './Game.css';
 
 export const firstPlayer = 1;
 
-const Game = () => {
+const Game = ({
+	boardSize
+	}) => {
 	const [player, setPlayer] = useState(firstPlayer);
 	const [winner, setWinner] = useState();
-	const [board, setBoard] = useState(getEmptyBoard());
+	const [board, setBoard] = useState(getEmptyBoard(boardSize));
 
 	function newGame() {
-		setBoard(getEmptyBoard());
+		setBoard(getEmptyBoard(boardSize));
 		setPlayer(firstPlayer);
 		setWinner();
 	}
@@ -55,8 +57,8 @@ const Game = () => {
 
 
 	function handleAction(xCoordinate, yCoordinate) {
-		if (!isInteger(xCoordinate) || !withinRange(xCoordinate, 0, 2)) { throw new Error(`${xCoordinate} - Not a valid coordinate!`); }
-		if (!isInteger(yCoordinate) || !withinRange(yCoordinate, 0, 2)) { throw new Error(`${yCoordinate} - Not a valid coordinate!`); }
+		if (!isInteger(xCoordinate) || !withinRange(xCoordinate, 0, board.length)) { throw new Error(`${xCoordinate} - Not a valid coordinate!`); }
+		if (!isInteger(yCoordinate) || !withinRange(yCoordinate, 0, board.length)) { throw new Error(`${yCoordinate} - Not a valid coordinate!`); }
 
 		if (!fieldIsEmpty(board, xCoordinate, yCoordinate)) { return; }
 
@@ -65,13 +67,18 @@ const Game = () => {
 	}
 
 	return (
-		<div className="Game">
-			<Board values={board} readonly={!!winner || !player} onAction={handleAction} />
-			<StatusIndicator winner={winner} player={player} onReset={newGame} />
+		<div className="TicTacToeApp">
+        <header>Play tic tac toe with your friend!</header>
+			<div className="Game">
+				<Board values={board} readonly={!!winner || !player} onAction={handleAction} />
+				<StatusIndicator winner={winner} player={player} onReset={newGame} />
+			</div>
 		</div>
 	);
 };
 
-Game.propTypes = {};
+Game.propTypes = {
+	boardSize: PropTypes.number
+};
 
 export default Game;
