@@ -5,15 +5,28 @@ export function fieldIsEmpty(board, xCoordinate, yCoordinate) {
 }
 
 export function findWinner(board) {
-	for (let i=0; i<3; i++) {
-		// columns
-		if (board[0][i] && tripleEqual(board[0][i], board[1][i], board[2][i])) { return board[0][i]; }
-		// rows
-		if (board[i][0] && tripleEqual(board[i][0], board[i][1], board[i][2])) { return board[i][0]; }
+	
+	const boardSize = board.length;
+
+	for (let i = 0; i < boardSize; i++) {
+		//rows 
+		for(let j = 0; j < boardSize; j++) {
+			if (board[i][j] && tripleEqual(board[i][j - 1], board[i][j], board[i][j + 1])) { return board[i][j] };
+		}
+
+		//columns 
+		for(let j = 1; j < boardSize - 1; j++) {
+			if (board[j][i] && tripleEqual(board[j - 1][i], board[j][i], board[j + 1][i])) { return board[j][i] };
+		}
 	}
-	// diagonals
-	if (board[0][0] && tripleEqual(board[0][0], board[1][1], board[2][2])) { return board[0][0]; }
-	if (board[0][2] && tripleEqual(board[0][2], board[1][1], board[2][0])) { return board[0][2]; }
+	// diagonals 
+	for (let i = 0; i < 3; i++) {
+		if (board[i][i] && tripleEqual(board[i][i], board[i + 1][i + 1], board[i + 2][i + 2])) { return board[i][i]; }
+		for (let j = boardSize; 3 <= j; j--) {
+			if (board[i][j - 1] && tripleEqual(board[i][j - 1], board[i + 1][j - 2], board[i + 2][j - 3])) { return board[i][j - 1]; }
+			if (board[j - 1][i] && tripleEqual(board[j - 1][i], board[j - 2][i + 1], board[j - 3][i + 2])) { return board[j - 1][i]; }
+		}
+	}
 
 	return false;
 }
@@ -27,10 +40,10 @@ export function hasEmptyFields(board) {
 	return false;
 }	
 
-export function getEmptyBoard() {
-	return [
-		[0, 0, 0],
-		[0, 0, 0],
-		[0, 0, 0],
-	];
+export function getEmptyBoard(boardSize) {
+	const board = Array(boardSize).fill(0);
+	for(let i = 0; i < boardSize; i++) {
+		board[i] = Array(boardSize).fill(0);
+	}
+	return board;
 }
