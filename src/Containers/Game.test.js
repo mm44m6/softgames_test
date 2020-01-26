@@ -11,7 +11,7 @@ jest.spyOn(React, 'useEffect').mockImplementation((f, metrics) => {
 
 let wrapper;
 beforeEach(() => {
-  wrapper = shallow(<Game />);
+  wrapper = shallow(<Game boardSize={5}/>);
 });
 
 test('Contains Board and Status Indicator', () => {
@@ -36,17 +36,33 @@ test('Scenario: First marker is placed', () => {
 });
 
 test('Scenario: Player 1 wins the game', () => {
+  const board = Array(5).fill(0);
+	for(let i = 0; i < 5; i++) {
+		board[i] = Array(5).fill(0);
+  }
+
   wrapper.find('Board').simulate('action', 0, 0);
   wrapper.find('Board').simulate('action', 1, 0);
   wrapper.find('Board').simulate('action', 1, 1);
   wrapper.find('Board').simulate('action', 2, 0);
   wrapper.find('Board').simulate('action', 2, 2);
 
-  expect(wrapper.find('Board').prop('values')).toEqual([ [ 1, 0, 0 ], [ 2, 1, 0 ], [ 2, 0, 1 ] ])
+  board[0][0] = 1,
+  board[1][0] = 2,
+  board[1][1] = 1,
+  board[2][0] = 2,
+  board[2][2] = 1
+
+  expect(wrapper.find('Board').prop('values')).toEqual(board)
   expect(wrapper.find('StatusIndicator').prop('winner')).toEqual(1);
 });
 
 test('Scenario: Player 2 wins the game', () => {
+  const board = Array(5).fill(0);
+	for(let i = 0; i < 5; i++) {
+		board[i] = Array(5).fill(0);
+  }
+
   wrapper.find('Board').simulate('action', 0, 0);
   wrapper.find('Board').simulate('action', 2, 0);
   wrapper.find('Board').simulate('action', 1, 1);
@@ -54,11 +70,23 @@ test('Scenario: Player 2 wins the game', () => {
   wrapper.find('Board').simulate('action', 0, 1);
   wrapper.find('Board').simulate('action', 2, 2);
 
-  expect(wrapper.find('Board').prop('values')).toEqual([ [ 1, 1, 0 ], [ 0, 1, 0 ], [ 2, 2, 2 ] ])
+  board[0][0] = 1,
+  board[2][0] = 2,
+  board[1][1] = 1,
+  board[2][1] = 2,
+  board[0][1] = 1,
+  board[2][2] = 2,
+
+  expect(wrapper.find('Board').prop('values')).toEqual(board);
   expect(wrapper.find('StatusIndicator').prop('winner')).toEqual(2);
 });
 
 test('Scenario: Stalemate', () => {
+  const board = Array(5).fill(0);
+	for(let i = 0; i < 5; i++) {
+		board[i] = Array(5).fill(0);
+  }
+
   wrapper.find('Board').simulate('action', 0, 0);
   wrapper.find('Board').simulate('action', 1, 0);
   wrapper.find('Board').simulate('action', 0, 1);
@@ -69,23 +97,46 @@ test('Scenario: Stalemate', () => {
   wrapper.find('Board').simulate('action', 2, 1);
   wrapper.find('Board').simulate('action', 2, 0);
 
-  expect(wrapper.find('Board').prop('values')).toEqual( [ [ 1, 1, 2 ], [ 2, 2, 1 ], [ 1, 2, 1 ] ]);
+  board[0][0] = 1,
+  board[1][0] = 2,
+  board[0][1] = 1,
+  board[1][1] = 2,
+  board[2][2] = 1,
+  board[0][2] = 2,
+  board[1][2] = 1,
+  board[2][1] = 2,
+  board[2][0] = 1,
+
+  expect(wrapper.find('Board').prop('values')).toEqual(board);
   expect(wrapper.find('StatusIndicator').prop('winner')).toBeFalsy();
   expect(wrapper.find('StatusIndicator').prop('player')).toBeFalsy();
 });
 
 test('Scenario: Clicking on already marked field doesn\'t count', () => {
+  const board = Array(5).fill(0);
+	for(let i = 0; i < 5; i++) {
+		board[i] = Array(5).fill(0);
+  }
+
   wrapper.find('Board').simulate('action', 0, 0);
   wrapper.find('Board').simulate('action', 0, 0);
   wrapper.find('Board').simulate('action', 0, 1);
 
-  expect(wrapper.find('Board').prop('values')).toEqual( [ [ 1, 2, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ]);
+  board[0][0] = 1;
+  board[0][1] = 2;
+
+  expect(wrapper.find('Board').prop('values')).toEqual(board);
 });
 
 test('Scenario: New Game', () => {
+  const board = Array(5).fill(0);
+	for(let i = 0; i < 5; i++) {
+		board[i] = Array(5).fill(0);
+  }
+  
   wrapper.find('StatusIndicator').simulate('reset');
 
-  expect(wrapper.find('Board').prop('values')).toEqual([ [ 0, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ]);
+  expect(wrapper.find('Board').prop('values')).toEqual(board);
   expect(wrapper.find('StatusIndicator').prop('winner')).toBeFalsy();
   expect(wrapper.find('StatusIndicator').prop('player')).toEqual(firstPlayer);
 });
