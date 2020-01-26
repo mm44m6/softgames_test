@@ -23,5 +23,5 @@ export function arrayEqual(array1, array2) {
 
 export function tripleEqual(a, b, c) {
 	if (arguments.length < 3) { throw new Error('Function expects 3 parameters'); }
-	return a === b && b === c;
+	return a === b && b === c && a != 0;
 }
